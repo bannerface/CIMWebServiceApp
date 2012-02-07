@@ -95,7 +95,6 @@
 	NSLog(theXML);
 	[theXML release];
 	
-    char *by = [webData mutableBytes];
 
 	//重新加載xmlParser
 	if( xmlParser )
