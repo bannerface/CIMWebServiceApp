@@ -54,7 +54,8 @@
 	//如果连接已经建好，则初始化data
 	if( theConnection )
 	{
-		webData = [[NSMutableData data] retain];
+        webData = [[NSMutableData alloc] init];
+		//webData = [[NSMutableData data] retain];
 	}
 	else
 	{
@@ -65,7 +66,7 @@
 
 -(void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-	//[webData setLength: 0];
+	[webData setLength: 0];
 	NSLog(@"connection: didReceiveResponse:1");
 }
 -(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
@@ -85,13 +86,17 @@
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
 	NSLog(@"3 DONE. Received Bytes: %d", [webData length]);
-	NSString *theXML = nil;
-    theXML = [[NSString alloc] initWithBytes: [webData mutableBytes] length:[webData length] encoding:NSUTF8StringEncoding];
+	NSMutableString *theXML = nil;
+    theXML = [[NSMutableString alloc] initWithBytes: [webData mutableBytes] length:[webData length] encoding:NSUTF8StringEncoding];
+    
+    // % xmlparse正确，nslog会显示不正确，解决办法可以在生成的时候加％，解析时去掉
+    //[theXML stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
+    
 	NSLog(theXML);
 	[theXML release];
 	
     char *by = [webData mutableBytes];
-    //TEST
+
 	//重新加載xmlParser
 	if( xmlParser )
 	{
@@ -139,6 +144,7 @@
 	{
 		recordResults = FALSE;
 		NSString *strResult = [NSString stringWithFormat:@"Result is: %@", soapResults];
+        
         NSLog(strResult);
         [strResult release];
         
